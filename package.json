@@ -4,15 +4,10 @@
   "description": "Soo zip Site for MVP Test",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "node server/app.js",
     "backend": "pm2 start server/app.js --watch",
     "frontend": "npm run start --prefix client",
     "dev": "concurrently \"npm run backend\" \"npm run start --prefix client\""
-=======
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : ""
->>>>>>> ed819cef54b51f9bf86cfd8a458f15e97e3768bb
   },
   "repository": {
     "type": "git",
@@ -25,22 +20,19 @@
   },
   "homepage": "https://github.com/thxxx/soozip_site#readme",
   "dependencies": {
-    "compression": "^1.7.4",
     "concurrently": "^6.2.0",
     "cookie": "^0.4.0",
-<<<<<<< HEAD
     "dotenv": "^10.0.0",
-=======
->>>>>>> ed819cef54b51f9bf86cfd8a458f15e97e3768bb
-    "express": "^4.17.1",
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
     "mysql": "^2.18.1",
-<<<<<<< HEAD
+    "n": "^7.3.1",
+    "node": "^16.6.1",
     "nodemon": "^2.0.12",
+    "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
+    "passport-local": "^1.0.0",
     "pm2": "^5.1.0",
-=======
->>>>>>> ed819cef54b51f9bf86cfd8a458f15e97e3768bb
     "sanitize-html": "^2.4.0",
     "session-file-store": "^1.5.0"
   }
