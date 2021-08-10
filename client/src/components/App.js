@@ -4,6 +4,7 @@ import NavBar from './views/NavBar/NavBar'
 import Footer from './views/Footer/Footer'
 import SneakersPage from './views/CategoryPage/SneakersPage'
 import Feedback from './views/Feedback/Feedback'
+import UploadPage from './views/UploadPage/UploadPage'
 import {HashRouter as Router, Route, Switch} from "react-router-dom"
 
 function App() { 
@@ -15,6 +16,7 @@ function App() {
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/sneakers" component={SneakersPage} />
           <Route exact path="/feedback" component={Feedback} />
+          <Route exact path="/upload" component={UploadPage} />
         </Switch>
         <Footer />
     </div>
