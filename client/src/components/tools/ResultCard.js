@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ImageList from '@material-ui/core/ImageList';
 import ImageListItem from '@material-ui/core/ImageListItem';
@@ -30,28 +30,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ResultCard( { sneakers } ) {
+export default function ResultCard( props ) {
   const [modalShow, setModalShow] = useState(false);
   const [itemOne, setItemOne] = useState({});
 
-  const itemData = [
+  let itemData = [
     {
         id: 1,
-        img: "img/shoes1.jpeg",
-        title: '아디다스 이지부스트',
-        author: '신형식',
+        content_image: "img/shoes1.jpeg",
+        content_title: '아디다스 이지부스트',
+        writer: '신형식',
         category:'sneakers',
-        like:1
+        content_desc: "내가 제일 아끼는 아디다스 신발임!!",
+        like : 1,
     },
     {
         id : 2,
-        img: "img/shoes2.jpeg",
-        title: '나이키 신발',
-        author: '김호진',
+        content_image: "img/shoes2.jpeg",
+        content_title: '나이키 신발',
+        writer: '김호진',
         category:'sneakers',
+        content_desc: "내가 제일 아끼는 나이키 신발임!!",
         like:4
     },
   ]
+
+  itemData = [...props.sneakers]
 
   const classes = useStyles();
 
@@ -81,27 +85,32 @@ export default function ResultCard( { sneakers } ) {
       .catch(err => { throw err; })
     }
   return (
+    <>
     <div className={classes.root}>
       <ImageList gap={1} className={classes.imageList} style={{width:'100%', height:'30%'}}>
         {
         itemData.map((item) => (
           <ImageListItem onClick={(e) => {e.preventDefault(); showDetail(item.id, item.category) }}
-            key={item.img} 
+            key={item.content_image} 
             cols={item.featured ? 2 : 1} rows={item.featured ? 2 : 1}>
             
-            <img src={item.img} alt={item.title} />
+            <img src={item.content_image} alt={item.content_title} />
             <ImageListItemBar
-              title={item.title}
+              title={item.content_title}
               position="bottom"
               actionIcon={"좋아요 : ", item.like}
               actionPosition="right"
               className={classes.titleBar}
-              subtitle={item.author}
+              subtitle={item.writer}
             />
           </ImageListItem>
         ))}
       </ImageList>
       <ModalGrid show={modalShow} item={itemOne} onHide={() => setModalShow(false)} />
     </div>
+
+    <button onClick={() => { console.log("asd" )}}>ㅁㄴㅇㅁㄴㅇ</button>
+    <img src='../../../../server/routes/uploadImages/1628585101525_-11608566304fguhnkxstk.png' alt="asd" style={{width:'100px'}} />
+    </>
   );
 }
