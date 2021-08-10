@@ -1,14 +1,34 @@
 import React, {useState} from 'react'
 import { Form, Button, FloatingLabel } from 'react-bootstrap'
-import { Form as AForm, Upload, Button as AButton, Col } from 'antd'
+import { Form as AForm, Upload, Button as AButton, Col, Input } from 'antd'
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons'
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from 'axios'
+
+const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 4 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 20 },
+    },
+  };
+  const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+      xs: { span: 24, offset: 0 },
+      sm: { span: 20, offset: 4 },
+    },
+  };
 
 function UploadPage(props) {
     const [title, setTitle] = useState("")
     const [writer, setWriter] = useState("")
     const [description, setDescription] = useState("")
     const [category, setCategory] = useState("")
+    const [hashtag, setHashtag] = useState([])
+    let hashnum = 0;
 
     const submitItem = () => {
         const cc = {
@@ -83,13 +103,16 @@ function UploadPage(props) {
         setCategory(e.currentTarget.value)
         console.log(e.currentTarget.value)
     }
+    const changeHashtag = (e) => {
+        setHashtag({...hashtag, hashnum : e.currentTarget.value}); 
+        console.log(hashtag)
+    }
     
 
     return (
         <span style={{	display: 'flex', justifyContent: 'center', alignItems: 'center', width:'500px', marginTop:'50px', marginBottom:'100px'}}>
-        
 
-        <Form onSubmit={submitItem}>
+        <AForm onSubmit={submitItem} name="dynamic_form_item" {...formItemLayoutWithOutLabel} >
 
             <AForm.Item
                 name="upload"
@@ -121,20 +144,68 @@ function UploadPage(props) {
                 </Form.Text>
             </Form.Group>
 
-            <Form.Group as={Col} controlId="formGridState">
-                <Form.Label>카테고리</Form.Label>
-                <Form.Select defaultValue="선택" value={category} onChange={changeCategory}>
-                    <option>선택</option>
-                    <option>스니커즈</option>
-                    <option>피규어</option>
-                    <option>기타</option>
-                </Form.Select>
-            </Form.Group>
-
+            <AForm.List
+                name="names"
+                rules={[
+                {
+                    validator: async (_, names) => {
+                    if (!names || names.length < 2) {
+                        return Promise.reject(new Error('At least 2 passengers'));
+                    }
+                    },
+                },
+                ]}
+            >
+        {(fields, { add, remove }, { errors }) => (
+          <>
+            {fields.map((field, index) => (
+              <AForm.Item
+                {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                label={index === 0 ? 'Passengers' : ''}
+                required={false}
+                key={field.key}
+              >
+                <AForm.Item
+                  {...field}
+                  validateTrigger={['onChange', 'onBlur']}
+                  rules={[
+                    {
+                      required: true,
+                      whitespace: true,
+                      message: " ",
+                    },
+                  ]}
+                  noStyle
+                >
+                  <Input placeholder="passenger name" style={{ width: '60%' }} onChange={changeHashtag}/>
+                </AForm.Item>
+                {fields.length > 1 ? (
+                  <MinusCircleOutlined
+                    className="dynamic-delete-button"
+                    onClick={() => {remove(field.name); hashnum += 1} }
+                  />
+                ) : null}
+              </AForm.Item>
+            ))}
+            <AForm.Item>
+              <Button
+                type="dashed"
+                onClick={() => {add()}}
+                style={{ width: '60%' }}
+                icon={<PlusOutlined />}
+              >
+                해시태그 추가하기
+              </Button>
+              <AForm.ErrorList errors={errors} />
+            </AForm.Item>
+          </>
+        )}
+      </AForm.List>
+        <br/>
             <Button variant="primary" type="submit" onClick={submitItem}>
                 Submit
             </Button>
-        </Form>
+        </AForm>
         </span>
     )
 }
