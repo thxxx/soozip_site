@@ -28,6 +28,8 @@ function UploadPage(props) {
     const [description, setDescription] = useState("")
     const [category, setCategory] = useState("")
     const [hashtag, setHashtag] = useState([])
+    const [imgUrl, setImgUrl] = useState("")
+    const [imgName, setImgName] = useState("")
     let hashnum = 0;
 
     const submitItem = () => {
@@ -38,17 +40,18 @@ function UploadPage(props) {
         }
         const categoryDB = cc[category]
         const body = {
-            title: title,
+            content_title: title,
             writer:writer,
-            description:description,
+            content_desc:description,
             category:categoryDB,
+            content_image:imgUrl,
         }
         console.log(body)
-        axios.post('api/item/uploadItem', body)
+        axios.post('api/uploadGallery', body)
         .then(response => {
             if(response.data.success) {
-                console.log("성공")
-                props.history.push(`/${categoryDB}`)
+                console.log(response)
+                props.history.push(`/`)
             }
             else{
                 console.log("fail to upload item")
@@ -64,20 +67,22 @@ function UploadPage(props) {
         const config = {
             header:{ 'content-type' : 'multipart/form-data' }
         }
-        formData.append("file", e.file)
-        console.log('Upload event:', e.file);
+        formData.append("file", e.target.files[0])
+        console.log('Upload event:', e.target.files[0]);
 
-        axios.post('/api/image/uploadImage', formData, config)
+        axios.post('/api/users/uploadfiles', formData, config)
         .then(response => {
             if(response.data.success) {
-                console.log("성공")
+                console.log(response.data)
+                setImgUrl(response.data.image)
+                setImgName(response.data.fileName)
             }
             else{
                 console.log("fail to upload iMage")
             }
         })
         .catch(err => {throw err;})
-      };
+    };
 
     const onImage = ( files ) => {
         let formData = new FormData();
@@ -112,19 +117,16 @@ function UploadPage(props) {
     return (
         <span style={{	display: 'flex', justifyContent: 'center', alignItems: 'center', width:'500px', marginTop:'50px', marginBottom:'100px'}}>
 
+
         <AForm onSubmit={submitItem} name="dynamic_form_item" {...formItemLayoutWithOutLabel} >
 
-            <AForm.Item
-                name="upload"
-                label="제일 잘 나온 사진을 한장 등록하세요."
-                valuePropName="fileList"
-                getValueFromEvent={normFile}
-                extra=""
-            >
-                <Upload name="logo" action="/upload.do" listType="picture">
-                    <Button icon={<UploadOutlined />}>Click to upload</Button>
-                </Upload>
-            </AForm.Item>
+            <div class="img-preview">
+                <img id="img-preview" src="" style={{display:'none', width:"250px"}} alt="미리보기" />
+                <input id={imgUrl} type="hidden" />
+            </div>
+            <label id="img-label" for="img">사진 업로드</label>
+            <input id="img" type="file" accept="image/*" onChange={normFile} />
+
             <br />
             <Form.Group className="mb-3" controlId="formWriter" style={{width:'100%'}}>
                 <Form.Label>작성자 닉네임</Form.Label>
@@ -144,7 +146,12 @@ function UploadPage(props) {
                 </Form.Text>
             </Form.Group>
 
-            <AForm.List
+            <Form.Group className="mb-3" controlId="formCategory" style={{width:'50%'}}>
+                <Form.Label>카테고리</Form.Label>
+                <Form.Control type="text" placeholder="category" value={category} onChange={changeCategory} />
+            </Form.Group>
+
+            {/* <AForm.List
                 name="names"
                 rules={[
                 {
@@ -200,7 +207,7 @@ function UploadPage(props) {
             </AForm.Item>
           </>
         )}
-      </AForm.List>
+      </AForm.List> */}
         <br/>
             <Button variant="primary" type="submit" onClick={submitItem}>
                 Submit

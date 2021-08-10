@@ -4,14 +4,16 @@ import '../../tools/ShowPage.scss'
 import ResultCard from '../../tools/ResultCard'
 
 function SneakersPage() {
+    const [sneakersList, setSneakersList] = useState("")
 
-    const [sneakersList, setSneakersList] = useState([])
-
-    useEffect(() => {
+    useEffect( () => {
         axios.get('/api/getSneakers')
-        .then( response => {
-            console.log(response.data.sneakers)
-            setSneakersList(response.data.sneakers)
+        .then( async (response) => {
+            if(response.data.success){
+                setSneakersList(response.data.sneakers);
+            }else{
+                console.log("스니커즈 로딩 에러")
+            }
         })
         .catch(error => ( console.log("Data load error ", error)))
     },[])
@@ -21,6 +23,8 @@ function SneakersPage() {
         <div className="body">
             스니커즈 페이지
             <ResultCard sneakers={sneakersList} />
+            <button onClick={() => {
+                    console.log("스니커즈 리스트" , sneakersList)}} >버튼</button>
         </div>
     )
 }
