@@ -22,30 +22,39 @@ router.use(express.urlencoded({ extended: false }));
 router.use(cookieParser());
 
 router.get('/', (req, res) => {
-    /*
-    db.query(`SELECT * FROM \`like\``, (err, rows, cols) => {
-        if (err) throw err
-        else {
-            for(let i = 0; i < rows.length; i++) {
-              console.log(rows[i].cookie_id + ": " + rows[i].content_id)
-            }
-        }
-    })
-    */
-    //console.log("항상", req.baseUrl)
     res.cookie('cookie_id', uuidv4(), {maxAge: 2629800}) // universally unique identifier to uniquely identify something.
     res.json({message:"generating cookie_id"}); // data에 객체로. end와 같음.
 })
 
-router.get('/getGallery', (req, res) => {
-    db.query(`SELECT * FROM gallery`, (err, rows, cols) => {
+router.get('/getSneakers', (req, res) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'sneakers'`, (err, rows, cols) => {
         if (err) throw err
         else {
-            console.log("getGallery okay.")
+            console.log("getSneakers okay.")
             res.json({items: rows}) // sending rows(array data)
         }
     })
-}) // will be separated by categories.
+})
+
+router.get('/getFigurine', (req, res) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'figurine'`, (err, rows, cols) => {
+        if (err) throw err
+        else {
+            console.log("getFigurine okay.")
+            res.json({items: rows}) // sending rows(array data)
+        }
+    })
+})
+
+router.get('/getOthers', (req, res) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'others'`, (err, rows, cols) => {
+        if (err) throw err
+        else {
+            console.log("getOthers okay.")
+            res.json({items: rows}) // sending rows(array data)
+        }
+    })
+})
 
 router.post('/uploadImage', (req, res) => {
     upload(req, res, (err) => {
@@ -64,8 +73,9 @@ router.post('/uploadImage', (req, res) => {
 
 router.post('/uploadGallery', (req, res) => { // VALUES are in req.body except cookie_id
     let contentId = null;
-    db.query(`INSERT INTO gallery(cookie_id, content_title, content_desc, category, writer, \`like\`, content_image) 
-    VALUES(${req.cookies.cookie_id}, ${req.body.content_title}, ${req.body.content_desc}, ${req.body.category}, ${req.body.writer}, ${req.body.like}, ${req.body.content_image})`, (err, rows, cols) => {
+    const sql = "INSERT INTO gallery(cookie_id, content_title, content_desc, category, writer, \`like\`, content_image) VALUES (?,?,?,?,?,?,?)"
+    const params = [req.cookies.cookie_id, req.body.content_title, req.body.content_desc, req.body.category, req.body.writer, 0, req.body.content_image]
+    db.query(sql, params, (err, rows, cols) => {
         if (err) throw err
         else {
             console.log("uploadGallery okay.")
