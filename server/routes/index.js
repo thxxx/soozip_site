@@ -41,16 +41,16 @@ router.post('/uploadGallery', (req, res) => { // VALUES are in req.body except c
         else {
             console.log("uploadGallery okay.")
             contentId = res.insertId;
+            for (let i = 0; i < req.body.hashtag.length; ++i) {
+                db.query(`INSERT INTO hashtag(content_id, tag) VALUES(${contentId}, ${req.body.hashtag[i]})`, (err, row, cols) => {
+                    if (err) throw err
+                    else {
+                        console.log('uploadTag okay.')
+                    }
+                })
+            } // if hashtag array exists, do operations
         }
     })
-    for (let i = 0; i < req.body.hashtag.length; ++i) {
-        db.query(`INSERT INTO hashtag(content_id, tag) VALUES(${contentId}, ${req.body.hashtag[i]})`, (err, row, cols) => {
-            if (err) throw err
-            else {
-                console.log('uploadTag okay.')
-            }
-        })
-    } // if hashtag array exists, do operations
 
     res.json({content_id: contentId})
     // adding hashtag necessary.
@@ -67,23 +67,23 @@ router.post('/updateLike', (req, res) => { // update되는 게시글의 id가 bo
                     isEqual = true; // DO NOT press like button!
                 }
             }
+            if (!isEqual) {
+                db.query(`SELECT * FROM gallery WHERE content_id = ${req.body.id}`, (err, rows, cols) => {
+                    if (err) throw err
+                    else {
+                        let likeNum = rows[0].like
+                        db.query(`UPDATE gallery SET \`like\` = ${likeNum + 1} WHERE content_id = ${req.body.id}`, (err, rows, cols) => {}) // updating the number of like
+                    }
+                })
+                db.query(`INSERT INTO \`like\`(cookie_id, content_id) VALUES(${req.cookies.cookie_id}, ${req.body.id})`, (err, rows, cols) => {
+                    if (err) throw err
+                    else {
+                        console.log("updateLike 2 okay.")
+                    }
+                }) // inserting cookie_id into like table
+            }
         }
     })
-    if (!isEqual) {
-        db.query(`SELECT * FROM gallery WHERE content_id = ${req.body.id}`, (err, rows, cols) => {
-            if (err) throw err
-            else {
-                let likeNum = rows[0].like
-                db.query(`UPDATE gallery SET \`like\` = ${likeNum + 1} WHERE content_id = ${req.body.id}`, (err, rows, cols) => {}) // updating the number of like
-            }
-        })
-        db.query(`INSERT INTO \`like\`(cookie_id, content_id) VALUES(${req.cookies.cookie_id}, ${req.body.id})`, (err, rows, cols) => {
-            if (err) throw err
-            else {
-                console.log("updateLike 2 okay.")
-            }
-        }) // inserting cookie_id into like table
-    }
 })
 
 module.exports = router;
