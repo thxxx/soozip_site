@@ -3,6 +3,19 @@ const router = express.Router();
 const db = require('../config/db.js')
 const cookieParser = require('cookie-parser')
 const uuidv4 = require('uuid/v4')
+const multer = require('multer')
+const path = require('path')
+
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(__dirname, '../images/'))
+    },
+    filename: function (req, file, cb) {
+      cb(null, `${Date.now()}_${file.originalname}`)
+    }
+})
+
+let upload = multer({ storage: storage }).single("file")
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
@@ -23,6 +36,7 @@ router.get('/', (req, res) => {
     res.cookie('cookie_id', uuidv4(), {maxAge: 2629800}) // universally unique identifier to uniquely identify something.
     res.json({message:"generating cookie_id"}); // data에 객체로. end와 같음.
 })
+
 router.get('/getGallery', (req, res) => {
     db.query(`SELECT * FROM gallery`, (err, rows, cols) => {
         if (err) throw err
@@ -31,7 +45,22 @@ router.get('/getGallery', (req, res) => {
             res.json({items: rows}) // sending rows(array data)
         }
     })
-}) // 갤러리 정보 전부 다.
+}) // will be separated by categories.
+
+router.post('/uploadImage', (req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            console.log(err) 
+            return res.json({ success: false });
+        } else {
+            return res.json({
+                success: true,
+                image: res.req.file.path, 
+                fileName: res.req.file.filename,
+            })
+        }
+    })
+})
 
 router.post('/uploadGallery', (req, res) => { // VALUES are in req.body except cookie_id
     let contentId = null;
@@ -72,15 +101,19 @@ router.post('/updateLike', (req, res) => { // update되는 게시글의 id가 bo
                     if (err) throw err
                     else {
                         let likeNum = rows[0].like
-                        db.query(`UPDATE gallery SET \`like\` = ${likeNum + 1} WHERE content_id = ${req.body.id}`, (err, rows, cols) => {}) // updating the number of like
+                        db.query(`UPDATE gallery SET \`like\` = ${likeNum + 1} WHERE content_id = ${req.body.id}`, (err, rows, cols) => {
+                            if (err) throw err
+                            else {
+                                db.query(`INSERT INTO \`like\`(cookie_id, content_id) VALUES(${req.cookies.cookie_id}, ${req.body.id})`, (err, rows, cols) => {
+                                    if (err) throw err
+                                    else {
+                                        console.log("updateLike 2 okay.")
+                                    }
+                                }) // inserting cookie_id into like table
+                            }
+                        }) // updating the number of like
                     }
                 })
-                db.query(`INSERT INTO \`like\`(cookie_id, content_id) VALUES(${req.cookies.cookie_id}, ${req.body.id})`, (err, rows, cols) => {
-                    if (err) throw err
-                    else {
-                        console.log("updateLike 2 okay.")
-                    }
-                }) // inserting cookie_id into like table
             }
         }
     })
