@@ -5,11 +5,20 @@ import './Footer.scss'
 function Footer() {
     return (
         <div className="foot" style={{
-            flexDirection: 'column', alignItems: 'center',
+            flexDirection: 'row', alignItems: 'center',
             justifyContent: 'center', fontSize:'1rem',
-            height:'250px', display: 'flex',
+            height:'300px', display: 'flex',
             }}>
-           <p> Happy Coding  {Icons.FaceRounded}</p>
+            <span className="foot_content">
+                <p> Happy Coding  {Icons.FaceRounded}</p>
+                <p> {Icons.LocationCityIcon} 팀 수집가들 </p>
+                <p> {Icons.EmailIcon} 이메일 : khj605123@gmail.com </p>
+           </span>
+            <span className="foot_content2">
+                <p> Happy Coding  {Icons.FaceRounded}</p>
+                <p> {Icons.LocationCityIcon} 팀 수집가들 </p>
+                <p> {Icons.EmailIcon} 이메일 : khj605123@gmail.com </p>
+           </span>
         </div>
     )
 }
