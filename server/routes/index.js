@@ -34,13 +34,26 @@ router.get('/getGallery', (req, res) => {
 }) // 갤러리 정보 전부 다.
 
 router.post('/uploadGallery', (req, res) => { // VALUES are in req.body except cookie_id
+    let contentId = null;
     db.query(`INSERT INTO gallery(cookie_id, content_title, content_desc, category, writer, \`like\`, content_image) 
     VALUES(${req.cookies.cookie_id}, ${req.body.content_title}, ${req.body.content_desc}, ${req.body.category}, ${req.body.writer}, ${req.body.like}, ${req.body.content_image})`, (err, rows, cols) => {
         if (err) throw err
         else {
             console.log("uploadGallery okay.")
+            contentId = res.insertId;
         }
     })
+    for (let i = 0; i < req.body.hashtag.length; ++i) {
+        db.query(`INSERT INTO hashtag(content_id, tag) VALUES(${contentId}, ${req.body.hashtag[i]})`, (err, row, cols) => {
+            if (err) throw err
+            else {
+                console.log('uploadTag okay.')
+            }
+        })
+    } // if hashtag array exists, do operations
+
+    res.json({content_id: contentId})
+    // adding hashtag necessary.
 }) // 포스트로 글 작성.
 
 router.post('/updateLike', (req, res) => { // update되는 게시글의 id가 body로 전달되어야 함.
@@ -57,9 +70,19 @@ router.post('/updateLike', (req, res) => { // update되는 게시글의 id가 bo
         }
     })
     if (!isEqual) {
-        db.query(`UPDATE `) // updating the number of like
-
-        db.query(`INSERT INTO`) // inserting cookie_id into like table
+        db.query(`SELECT * FROM gallery WHERE content_id = ${req.body.id}`, (err, rows, cols) => {
+            if (err) throw err
+            else {
+                let likeNum = rows[0].like
+                db.query(`UPDATE gallery SET \`like\` = ${likeNum + 1} WHERE content_id = ${req.body.id}`, (err, rows, cols) => {}) // updating the number of like
+            }
+        })
+        db.query(`INSERT INTO \`like\`(cookie_id, content_id) VALUES(${req.cookies.cookie_id}, ${req.body.id})`, (err, rows, cols) => {
+            if (err) throw err
+            else {
+                console.log("updateLike 2 okay.")
+            }
+        }) // inserting cookie_id into like table
     }
 })
 
