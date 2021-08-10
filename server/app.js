@@ -2,7 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-require('./config/dotenv').config()
+//require('./config/dotenv').config()
 var logger = require('morgan');
 const port = 3001
 var indexRouter = require('./routes/index');

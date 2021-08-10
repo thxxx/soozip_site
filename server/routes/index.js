@@ -22,12 +22,14 @@ router.use(express.urlencoded({ extended: false }));
 router.use(cookieParser());
 
 router.get('/', (req, res) => {
-    res.cookie('cookie_id', uuidv4(), {maxAge: 2629800}) // universally unique identifier to uniquely identify something.
-    res.json({message:"generating cookie_id"}); // data에 객체로. end와 같음.
+    if (req.cookies.cookie_id === undefined) {
+        res.cookie('cookie_id', uuidv4(), {maxAge: 2629800}) // universally unique identifier to uniquely identify something.
+    }
+    res.json({message:"generating or remaining cookie_id"}); // data에 객체로. end와 같음.
 })
 
 router.get('/getSneakers', (req, res) => {
-    db.query(`SELECT * FROM gallery WHERE category = 'sneakers'`, (err, rows, cols) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'sneakers' ORDER BY \`like\` DESC`, (err, rows, cols) => {
         if (err) throw err
         else {
             console.log("getSneakers okay.")
@@ -37,7 +39,7 @@ router.get('/getSneakers', (req, res) => {
 })
 
 router.get('/getFigurine', (req, res) => {
-    db.query(`SELECT * FROM gallery WHERE category = 'figurine'`, (err, rows, cols) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'figurine' ORDER BY \`like\` DESC`, (err, rows, cols) => {
         if (err) throw err
         else {
             console.log("getFigurine okay.")
@@ -47,7 +49,7 @@ router.get('/getFigurine', (req, res) => {
 })
 
 router.get('/getOthers', (req, res) => {
-    db.query(`SELECT * FROM gallery WHERE category = 'others'`, (err, rows, cols) => {
+    db.query(`SELECT * FROM gallery WHERE category = 'others' ORDER BY \`like\` DESC`, (err, rows, cols) => {
         if (err) throw err
         else {
             console.log("getOthers okay.")
