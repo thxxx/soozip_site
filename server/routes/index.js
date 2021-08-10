@@ -86,5 +86,4 @@ router.post('/updateLike', (req, res) => { // update되는 게시글의 id가 bo
     }
 })
 
-
 module.exports = router;

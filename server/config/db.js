@@ -4,7 +4,6 @@ require('dotenv').config({
     path: path.resolve(__dirname, '../.env')
 })
 
-
 const db_info = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
