@@ -5,6 +5,7 @@ import ImageListItem from '@material-ui/core/ImageListItem';
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import axios from 'axios';
 import ModalGrid from './ModalGrid'
+import './ResultCard.scss'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,7 @@ export default function ResultCard( props ) {
     },
   ]
 
-  itemData = [...props.sneakers]
+  //itemData = [...props.sneakers]
 
   const classes = useStyles();
 
@@ -64,14 +65,13 @@ export default function ResultCard( props ) {
     const showDetail = (id, category) => {
       console.log("클릭하셨습니다!", id, category);
       setModalShow(true);
-      setItemOne({
-        title:"title1",
-        img:'img/museum.jpg',
-        description: "설명1",
-        like: 5,
-        author: "김호진",
-      });
-
+      for (var i in itemData ){
+        if (itemData[i].id===parseInt(id)){
+          console.log("item['id'] ",itemData[i])
+          setItemOne(itemData[i])
+        }
+      }
+      /*
       const body = {
         id: id,
         category: category,
@@ -83,34 +83,39 @@ export default function ResultCard( props ) {
         setItemOne(response.data.item);
       })
       .catch(err => { throw err; })
+      */
     }
+
   return (
     <>
     <div className={classes.root}>
       <ImageList gap={1} className={classes.imageList} style={{width:'100%', height:'30%'}}>
         {
-        itemData.map((item) => (
-          <ImageListItem onClick={(e) => {e.preventDefault(); showDetail(item.id, item.category) }}
+        itemData.map(
+          (item) => (
+          <ImageListItem onClick={(e) => {e.preventDefault(); showDetail(item.id, item.category) }} 
             key={item.content_image} 
-            cols={item.featured ? 2 : 1} rows={item.featured ? 2 : 1}>
+            className="single"
+            >
             
             <img src={item.content_image} alt={item.content_title} />
             <ImageListItemBar
               title={item.content_title}
               position="bottom"
-              actionIcon={"좋아요 : ", item.like}
+              actionIcon={"좋아요 : " + item.like}
               actionPosition="right"
               className={classes.titleBar}
               subtitle={item.writer}
             />
+            <p>이거 어디나오지ㅣㅣ</p>
           </ImageListItem>
-        ))}
+        )
+        )}
       </ImageList>
-      <ModalGrid show={modalShow} item={itemOne} onHide={() => setModalShow(false)} />
-    </div>
 
-    <button onClick={() => { console.log("asd" )}}>ㅁㄴㅇㅁㄴㅇ</button>
-    <img src='../../../../server/routes/uploadImages/1628585101525_-11608566304fguhnkxstk.png' alt="asd" style={{width:'100px'}} />
+      <ModalGrid show={modalShow} item={itemOne} onHide={() => setModalShow(false)} />
+    
+    </div>
     </>
   );
 }

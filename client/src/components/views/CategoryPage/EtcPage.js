@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import '../../tools/ShowPage.scss'
 import ResultCard from '../../tools/ResultCard'
 
-function SneakersPage() {
+function EtcPage() {
     const [sneakersList, setSneakersList] = useState("")
 
     useEffect( () => {
@@ -29,4 +29,4 @@ function SneakersPage() {
     )
 }
 
-export default SneakersPage
+export default EtcPage

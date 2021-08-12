@@ -5,6 +5,8 @@ import Footer from './views/Footer/Footer'
 import SneakersPage from './views/CategoryPage/SneakersPage'
 import Feedback from './views/Feedback/Feedback'
 import UploadPage from './views/UploadPage/UploadPage'
+import EtcPage from './views/CategoryPage/EtcPage'
+import FigurePage from './views/CategoryPage/FigurePage'
 import {HashRouter as Router, Route, Switch} from "react-router-dom"
 
 function App() { 
@@ -14,6 +16,8 @@ function App() {
         <NavBar />
         <Switch>
           <Route exact path="/" component={LandingPage} />
+          <Route exact path="/etc" component={EtcPage} />
+          <Route exact path="/figures" component={FigurePage} />
           <Route exact path="/sneakers" component={SneakersPage} />
           <Route exact path="/feedback" component={Feedback} />
           <Route exact path="/upload" component={UploadPage} />
