@@ -5,7 +5,7 @@ function Feedback() {
     return (
         <div style={{align: "center"}}>
 
-            <div class="typeform-widget" data-url="https://form.typeform.com/to/oRcv6Qdu?typeform-medium=embed-snippet" 
+            <div className="typeform-widget" data-url="https://form.typeform.com/to/oRcv6Qdu?typeform-medium=embed-snippet" 
             style={{width: '100%', height: '800px'}}>
                 </div>
         </div>

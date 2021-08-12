@@ -133,12 +133,12 @@ function UploadPage(props) {
                 <Form.Control type="text" placeholder="작성자" value={writer} onChange={changeWriter} />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formTitle" style={{width:'50%'}}>
+            <Form.Group className="mb-3" controlId="formTitle" style={{width:'100%'}}>
                 <Form.Label>제목(아이템 이름) 작성</Form.Label>
                 <Form.Control type="text" placeholder="title" value={title} onChange={changeTitle} />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formDescription" style={{width:'70%'}}>
+            <Form.Group className="mb-3" controlId="formDescription" style={{width:'100%'}}>
                 <Form.Label>아이템에 설명</Form.Label>
                 <Form.Control as="textarea" placeholder="Description" value={description} onChange={changeDescription} style={{ height: '150px' }} />
                 <Form.Text className="text-muted">
